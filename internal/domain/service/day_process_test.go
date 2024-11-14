@@ -1,9 +1,10 @@
 package service
 
 import (
+	"testing"
+
 	"github.com/drybin/washington_changes_all/internal/domain/model"
 	"github.com/drybin/washington_changes_all/internal/domain/types"
-	"testing"
 )
 
 func Test_getTierName(t *testing.T) {

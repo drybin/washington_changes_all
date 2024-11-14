@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"context"
-	"github.com/drybin/washington_changes_all/internal/app/cli/usecase/dto"
 	"log"
+
+	"github.com/drybin/washington_changes_all/internal/app/cli/usecase/dto"
 )
 
 type IUserSender interface {

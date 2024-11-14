@@ -3,11 +3,11 @@ package model
 import "time"
 
 type Day struct {
-	ID               int
-	Date             time.Time
-	AccountBalance   float64
-	OveralAmountUsdt float64
-	OveralCoinCount  int
-	TierName         string
-	CointToBuy       string
+	ID                int
+	Date              time.Time
+	AccountBalance    float64
+	OverallAmountUsdt float64
+	OverallCoinCount  int
+	TierName          string
+	CoinToBuy         string
 }

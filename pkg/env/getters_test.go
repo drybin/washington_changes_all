@@ -1,10 +1,11 @@
 package env
 
 import (
-	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 // nolint:paralleltest

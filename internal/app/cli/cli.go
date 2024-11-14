@@ -1,13 +1,14 @@
 package cli
 
 import (
+	"log"
+	"os"
+
 	"github.com/drybin/washington_changes_all/internal/app/cli/config"
 	"github.com/drybin/washington_changes_all/internal/app/cli/registry"
 	"github.com/drybin/washington_changes_all/internal/presentation/command"
 	"github.com/joho/godotenv"
 	cliV2 "github.com/urfave/cli/v2"
-	"log"
-	"os"
 )
 
 const cliAppDesc = "cli tool for go-service-skeleton"

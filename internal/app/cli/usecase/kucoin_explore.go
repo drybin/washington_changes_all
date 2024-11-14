@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+
 	"github.com/drybin/washington_changes_all/internal/domain/model"
 	"github.com/drybin/washington_changes_all/internal/domain/service"
 	"github.com/drybin/washington_changes_all/internal/domain/types/coin_name"

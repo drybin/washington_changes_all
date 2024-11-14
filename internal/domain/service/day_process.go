@@ -153,12 +153,12 @@ func (s *DayProcessService) buy(
 	day, err := s.DaysRepo.Save(
 		ctx,
 		model.Day{
-			Date:             time.Now(),
-			AccountBalance:   balance,
-			OveralAmountUsdt: prevDay.OveralAmountUsdt + 1.0,
-			OveralCoinCount:  coinCount,
-			TierName:         tierName.String(),
-			CointToBuy:       coinToBuy.Coin.Name.String(),
+			Date:              time.Now(),
+			AccountBalance:    balance,
+			OverallAmountUsdt: prevDay.OverallAmountUsdt + 1.0,
+			OverallCoinCount:  coinCount,
+			TierName:          tierName.String(),
+			CoinToBuy:         coinToBuy.Coin.Name.String(),
 		},
 	)
 	if err != nil {

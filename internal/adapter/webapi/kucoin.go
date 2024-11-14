@@ -3,14 +3,15 @@ package webapi
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/Kucoin/kucoin-go-sdk"
 	"github.com/drybin/washington_changes_all/internal/domain/model"
 	"github.com/drybin/washington_changes_all/internal/domain/types"
 	"github.com/drybin/washington_changes_all/internal/domain/types/coin_name"
 	"github.com/drybin/washington_changes_all/pkg/wrap"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type KucoinWebapi struct {

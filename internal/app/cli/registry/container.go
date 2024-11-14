@@ -2,6 +2,7 @@ package registry
 
 import (
 	"context"
+
 	"github.com/Kucoin/kucoin-go-sdk"
 	"github.com/drybin/washington_changes_all/internal/adapter/pg"
 	"github.com/drybin/washington_changes_all/internal/adapter/webapi"

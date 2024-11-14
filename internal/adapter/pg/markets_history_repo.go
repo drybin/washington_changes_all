@@ -2,11 +2,12 @@ package pg
 
 import (
 	"context"
+	"time"
+
 	"github.com/drybin/washington_changes_all/internal/domain/model"
 	"github.com/drybin/washington_changes_all/pkg/wrap"
 	washington_database "github.com/drybin/washington_changes_all/sqlc/gen"
 	"github.com/jackc/pgx/v5"
-	"time"
 )
 
 type MarketsHistoryRepository struct {

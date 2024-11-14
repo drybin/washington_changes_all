@@ -2,12 +2,13 @@ package buy_strategy
 
 import (
 	"context"
+	"sort"
+
 	"github.com/drybin/washington_changes_all/internal/app/cli/config"
 	"github.com/drybin/washington_changes_all/internal/domain/model"
 	"github.com/drybin/washington_changes_all/internal/domain/repo"
 	"github.com/drybin/washington_changes_all/internal/domain/types/coin_name"
 	"github.com/drybin/washington_changes_all/pkg/wrap"
-	"sort"
 )
 
 type AmountEmptyStrategy struct {
@@ -56,7 +57,7 @@ func getCoinsWithEmptyAvgPrice(coinAvgPrices *[]model.CoinPrice, coins []config.
 				found = true
 			}
 		}
-		if found == false {
+		if !found {
 			coinResult = append(coinResult, coin)
 		}
 	}
