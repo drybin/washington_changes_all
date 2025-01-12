@@ -10,7 +10,7 @@ type ReportSenderService struct {
 }
 
 type IReportSenderService interface {
-	Send(msg string) (bool, error)
+	Send(msg string) error
 }
 
 func NewReportSenderService(
@@ -19,12 +19,12 @@ func NewReportSenderService(
 	return &ReportSenderService{telegramWebapi}
 }
 
-func (s *ReportSenderService) Send(msg string) (bool, error) {
+func (s *ReportSenderService) Send(msg string) error {
 	_, err := s.telegramWebapi.Send(msg)
 
 	if err != nil {
-		return false, wrap.Errorf("failed to send report: %w", err)
+		return wrap.Errorf("failed to send report: %w", err)
 	}
 
-	return true, nil
+	return nil
 }

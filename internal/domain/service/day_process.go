@@ -28,7 +28,7 @@ type DayProcessService struct {
 }
 
 type IDayProcessService interface {
-	Process(ctx context.Context) (bool, error)
+	Process(ctx context.Context) (*model.DayResult, error)
 }
 
 func NewDayProcessService(
@@ -57,21 +57,21 @@ func NewDayProcessService(
 
 func (s *DayProcessService) Process(
 	ctx context.Context,
-) (bool, error) {
+) (*model.DayResult, error) {
 
 	balance, err := s.CryptoExchangeService.GetBalance()
 	if err != nil {
-		return false, wrap.Errorf("failed to get balance info: %w", err)
+		return nil, wrap.Errorf("failed to get balance info: %w", err)
 	}
 	fmt.Printf("Баланс: %.2f\n", balance)
 	if balance < 0.0 {
 		fmt.Printf("баланс меньше 1$ завершаем работу\n")
-		return false, nil
+		return nil, nil
 	}
 
 	day, err := s.DaysRepo.GetLastDayInfo(ctx)
 	if err != nil {
-		return false, wrap.Errorf("failed to get last day info: %w", err)
+		return nil, wrap.Errorf("failed to get last day info: %w", err)
 	}
 
 	tier := getTierName(day)
@@ -84,43 +84,78 @@ func (s *DayProcessService) Process(
 
 	marketsHistory, err := s.CryptoExchangeService.GetMarketsHistory()
 	if err != nil {
-		return false, wrap.Errorf("failed to get Markets History: %w", err)
+		return nil, wrap.Errorf("failed to get Markets History: %w", err)
 	}
 
 	err = s.MarketHistoryRepo.SaveMany(ctx, marketsHistory)
 	if err != nil {
-		return false, wrap.Errorf("failed to save Markets History: %w", err)
+		return nil, wrap.Errorf("failed to save Markets History: %w", err)
 	}
 
+	fmt.Printf("Ищем монеты которые раньше не покупали\n")
 	coinsToBuy, err := s.AmountEmptyStrategy.Process(ctx, tierCoins, marketsHistory)
 	if err != nil {
-		return false, wrap.Errorf("failed to apply AmountEmptyStrategy: %w", err)
+		return nil, wrap.Errorf("failed to apply AmountEmptyStrategy: %w", err)
 	}
 
-	if len(coinsToBuy) > 0 {
+	amountEmptyCoinCount := len(coinsToBuy)
+	if amountEmptyCoinCount > 0 {
 		fmt.Printf("Монеты которые раньше не покупали, отсортированные по макс падению: %v\n", coinsToBuy)
-		//TODO BUY
+		coinToBuy := coinsToBuy[0]
+		dayResult, err := s.buy(
+			ctx,
+			tier,
+			true,
+			amountEmptyCoinCount,
+			balance,
+			*day,
+			coinToBuy,
+		)
+
+		if err != nil {
+			return nil, wrap.Errorf("failed to buy coin: %w", err)
+		}
+
+		return dayResult, nil
 	}
 
 	fmt.Printf("Монеты которыx раньше не покупали нет\n")
+	fmt.Printf("Ищем монеты с макс падением от средней цены\n")
 	coinsToBuy, err = s.MaxPriceDownStrategy.Process(ctx, tierCoins, marketsHistory)
 	if err != nil {
-		return false, wrap.Errorf("failed to apply MaxPriceDownStrategy: %w", err)
+		return nil, wrap.Errorf("failed to apply MaxPriceDownStrategy: %w", err)
 	}
 
 	fmt.Printf("Монеты отсортированные по макс падению от средней цены: %v\n", coinsToBuy)
 	fmt.Printf("%v", lo.Samples(coinsToBuy, 1))
 
-	return true, nil
+	coinToBuy := coinsToBuy[0]
+	dayResult, err := s.buy(
+		ctx,
+		tier,
+		false,
+		amountEmptyCoinCount,
+		balance,
+		*day,
+		coinToBuy,
+	)
+
+	if err != nil {
+		return nil, wrap.Errorf("failed to buy coin: %w", err)
+	}
+
+	return dayResult, nil
 }
 
 func (s *DayProcessService) buy(
 	ctx context.Context,
 	tierName types.Tier,
+	amountEmpty bool,
+	amountEmptyCoinsCount int,
 	balance float64,
 	prevDay model.Day,
 	coinToBuy model.CoinPriceChange,
-) error {
+) (*model.DayResult, error) {
 	fmt.Printf("Покупаем монету: %s\n", coinToBuy.Coin.Name)
 
 	//byu on kukoin
@@ -128,14 +163,22 @@ func (s *DayProcessService) buy(
 		Name: coinToBuy.Coin.Name,
 	})
 
+	if err == nil {
+		return nil, wrap.Errorf("failed to byu by market: %w", err)
+	}
+
+	if orderInfo == nil {
+		return nil, wrap.Errorf("byu orderInfo empty")
+	}
+
 	amount, err := strconv.ParseFloat(orderInfo.DealFunds, 32)
 	if err == nil {
-		return wrap.Errorf("failed to parse amount float in order info: %w", err)
+		return nil, wrap.Errorf("failed to parse amount float in order info: %w", err)
 	}
 
 	dealSize, err := strconv.ParseFloat(orderInfo.DealSize, 32)
 	if err == nil {
-		return wrap.Errorf("failed to parse deal size float in order info: %w", err)
+		return nil, wrap.Errorf("failed to parse deal size float in order info: %w", err)
 	}
 
 	price := amount / dealSize
@@ -143,7 +186,7 @@ func (s *DayProcessService) buy(
 	fmt.Println("Логируем информацию о дне")
 	coinWithAvgPrices, err := s.CoinAvgPricesRepo.GetAll(ctx)
 	if err != nil {
-		return wrap.Errorf("failed to get all coin avg prices: %w", err)
+		return nil, wrap.Errorf("failed to get all coin avg prices: %w", err)
 	}
 
 	coinCount, prevCoinAvgPrice := calcCoinsCountAndPrevAvgPrice(coinWithAvgPrices, coinToBuy.Coin)
@@ -162,7 +205,7 @@ func (s *DayProcessService) buy(
 		},
 	)
 	if err != nil {
-		return wrap.Errorf("failed to save day info: %w", err)
+		return nil, wrap.Errorf("failed to save day info: %w", err)
 	}
 
 	fmt.Println("Логируем покупку в таблицу buy_log")
@@ -174,12 +217,12 @@ func (s *DayProcessService) buy(
 		price,
 	)
 	if err != nil {
-		return wrap.Errorf("failed to save log buy: %w", err)
+		return nil, wrap.Errorf("failed to save log buy: %w", err)
 	}
 
 	prevCoinAmount, err := s.CoinAmountRepo.Get(ctx, coinToBuy.Coin)
 	if err != nil {
-		return wrap.Errorf("failed to get coin amount: %w", err)
+		return nil, wrap.Errorf("failed to get coin amount: %w", err)
 	}
 
 	avgPrice := price
@@ -191,7 +234,7 @@ func (s *DayProcessService) buy(
 	fmt.Println("Логируем новую среднюю цену")
 	err = s.CoinAvgPricesRepo.Save(ctx, model.CoinPrice{Coin: coinToBuy.Coin, Price: avgPrice})
 	if err != nil {
-		return wrap.Errorf("failed to save coin avg price: %w", err)
+		return nil, wrap.Errorf("failed to save coin avg price: %w", err)
 	}
 
 	coinAmount := prevCoinAmount + amount
@@ -200,12 +243,30 @@ func (s *DayProcessService) buy(
 	fmt.Println("Логируем новое количество")
 	err = s.CoinAmountRepo.Save(ctx, coinToBuy.Coin, coinAmount)
 	if err != nil {
-		return wrap.Errorf("failed to save coin amount: %w", err)
+		return nil, wrap.Errorf("failed to save coin amount: %w", err)
+	}
+
+	dayResult := &model.DayResult{
+		Balance:                      balance,
+		PrevDay:                      prevDay,
+		Tier:                         tierName,
+		AmountEmptyStrategy:          amountEmpty,
+		AmountEmptyStrategyCoinCount: amountEmptyCoinsCount,
+		CoinName:                     coinToBuy.Coin.Name,
+		CoinPriceChange:              coinToBuy.PriceChange,
+		CoinAth:                      coinToBuy.Ath,
+		Amount:                       amount,
+		Price:                        price,
+		CoinCount:                    coinCount,
+		PrevCoinAvgPrice:             prevCoinAvgPrice,
+		CoinAvgPrice:                 avgPrice,
+		DayNumber:                    day.ID,
+		CoinAmount:                   amount,
 	}
 
 	//droptabs log
 	//coingecko log
-	return nil
+	return dayResult, nil
 }
 
 func calcCoinsCountAndPrevAvgPrice(coins *[]model.CoinPrice, coinToBuy model.Coin) (int, float64) {

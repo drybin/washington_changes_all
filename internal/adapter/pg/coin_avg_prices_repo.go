@@ -80,8 +80,8 @@ func (u CoinAvgPricesRepository) Save(ctx context.Context, coinPrice model.CoinP
 	_, err := db.SaveCoinAvgPricesAll(
 		ctx,
 		washington_database.SaveCoinAvgPricesAllParams{
-			coinPrice.Coin.Name.String(),
-			coinPrice.Price,
+			Coin:  coinPrice.Coin.Name.String(),
+			Price: coinPrice.Price,
 		},
 	)
 

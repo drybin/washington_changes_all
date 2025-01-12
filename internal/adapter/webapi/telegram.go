@@ -2,7 +2,7 @@ package webapi
 
 import (
 	"fmt"
-	
+
 	"github.com/drybin/washington_changes_all/pkg/wrap"
 	"github.com/go-resty/resty/v2"
 )
@@ -39,7 +39,7 @@ func (c *TelegramWebapi) Send(msg string) (bool, error) {
 			Text:   msg,
 		}).
 		//SetBody(map[string]interface{}{"chat_id": "-1002135399994", "text": "message test"}).
-		Post(fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", c.botToken))
+		Post(fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage&parse_mode=html", c.botToken))
 
 	if err != nil {
 		return false, wrap.Errorf("failed to send tg message: %w", err)

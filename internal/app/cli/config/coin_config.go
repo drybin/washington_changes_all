@@ -20,7 +20,7 @@ func InitCoinConfig() CoinConfig {
 		TierOne: []Coin{
 			{
 				Name: coin_name.BTC,
-				ATH:  73750.0,
+				ATH:  103900.0,
 			},
 			{
 				Name: coin_name.ETH,
@@ -28,11 +28,11 @@ func InitCoinConfig() CoinConfig {
 			},
 			{
 				Name: coin_name.SOL,
-				ATH:  260.0,
+				ATH:  263.0,
 			},
 			{
 				Name: coin_name.BNB,
-				ATH:  690.0,
+				ATH:  793.0,
 			},
 			{
 				Name: coin_name.XRP,
@@ -52,7 +52,7 @@ func InitCoinConfig() CoinConfig {
 			},
 			{
 				Name: coin_name.TON,
-				ATH:  7.65,
+				ATH:  8.24,
 			},
 			{
 				Name: coin_name.DOT,
@@ -76,7 +76,7 @@ func InitCoinConfig() CoinConfig {
 			},
 			{
 				Name: coin_name.TRON,
-				ATH:  0.3,
+				ATH:  0.44,
 			},
 			{
 				Name: coin_name.APT,

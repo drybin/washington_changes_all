@@ -78,6 +78,7 @@ func calculateGlobalAthChange(coinResult []config.Coin, marketsHistory *[]model.
 					model.CoinPriceChange{
 						Coin:        model.Coin{Name: coin.Name},
 						PriceChange: athChange,
+						Ath:         coin.ATH,
 					},
 				)
 			}

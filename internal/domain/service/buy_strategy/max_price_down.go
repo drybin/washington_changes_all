@@ -57,7 +57,8 @@ func calculateAvgPriceChange(coinResult *[]model.CoinPrice, marketsHistory *[]mo
 					priceResult,
 					model.CoinPriceChange{
 						Coin:        model.Coin{Name: coin.Coin.Name},
-						PriceChange: 100.0 - priceChange,
+						PriceChange: priceChange,
+						Ath:         0.0,
 					},
 				)
 			}
