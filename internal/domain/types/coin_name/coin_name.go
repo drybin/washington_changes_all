@@ -114,6 +114,7 @@ const (
 	BABYDOGE CoinName = "BABYDOGE"
 	DEGEN    CoinName = "DEGEN"
 	MEW      CoinName = "MEW"
+	VINU     CoinName = "VINU"
 
 	USDT    CoinName = "USDT"
 	UNKNOWN CoinName = "UNKNOWN"

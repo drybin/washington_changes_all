@@ -71,12 +71,26 @@ func InitCoinConfig() CoinConfig {
 				ATH:  44.7,
 			},
 			{
-				Name: coin_name.LTC,
-				ATH:  412.96,
-			},
-			{
 				Name: coin_name.TRON,
 				ATH:  0.44,
+			},
+			{
+				Name: coin_name.NEAR,
+				ATH:  20.42,
+			},
+			{
+				Name: coin_name.XLM,
+				ATH:  0.93,
+			},
+			{
+				Name: coin_name.SUI,
+				ATH:  2.18,
+			},
+		},
+		TierTwo: []Coin{
+			{
+				Name: coin_name.LTC,
+				ATH:  412.96,
 			},
 			{
 				Name: coin_name.APT,
@@ -87,15 +101,9 @@ func InitCoinConfig() CoinConfig {
 				ATH:  4.85,
 			},
 			{
-				Name: coin_name.NEAR,
-				ATH:  20.42,
-			},
-			{
 				Name: coin_name.ARB,
 				ATH:  2.4,
 			},
-		},
-		TierTwo: []Coin{
 			{
 				Name: coin_name.BCH,
 				ATH:  4355,
@@ -117,20 +125,12 @@ func InitCoinConfig() CoinConfig {
 				ATH:  176.1,
 			},
 			{
-				Name: coin_name.XLM,
-				ATH:  0.93,
-			},
-			{
 				Name: coin_name.INJ,
 				ATH:  52.7,
 			},
 			{
 				Name: coin_name.XMR,
 				ATH:  517.6,
-			},
-			{
-				Name: coin_name.SUI,
-				ATH:  2.18,
 			},
 			{
 				Name: coin_name.ALGO,
@@ -241,11 +241,15 @@ func InitCoinConfig() CoinConfig {
 				ATH:  2.88,
 			},
 			{
-				Name: coin_name.RVN,
-				ATH:  0.28,
+				Name: coin_name.HBAR,
+				ATH:  0.57,
 			},
 		},
 		TierThree: []Coin{
+			{
+				Name: coin_name.RVN,
+				ATH:  0.28,
+			},
 			{
 				Name: coin_name.STX,
 				ATH:  3.84,
@@ -261,10 +265,6 @@ func InitCoinConfig() CoinConfig {
 			{
 				Name: coin_name.TAO,
 				ATH:  767.6,
-			},
-			{
-				Name: coin_name.HBAR,
-				ATH:  0.57,
 			},
 			{
 				Name: coin_name.MKR,
@@ -428,11 +428,15 @@ func InitCoinConfig() CoinConfig {
 			},
 			{
 				Name: coin_name.DEGEN,
-				ATH:  0.06459,
+				ATH:  0.09459,
 			},
 			{
 				Name: coin_name.MEW,
 				ATH:  0.01034,
+			},
+			{
+				Name: coin_name.VINU,
+				ATH:  0.00000002703,
 			},
 		},
 	}
