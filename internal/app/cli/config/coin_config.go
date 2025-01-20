@@ -20,7 +20,7 @@ func InitCoinConfig() CoinConfig {
 		TierOne: []Coin{
 			{
 				Name: coin_name.BTC,
-				ATH:  103900.0,
+				ATH:  109500.0,
 			},
 			{
 				Name: coin_name.ETH,
