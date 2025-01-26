@@ -73,9 +73,15 @@ func (s *DayProcessService) Process(
 	if err != nil {
 		return nil, wrap.Errorf("failed to get last day info: %w", err)
 	}
+	if day == nil {
+		day = &model.Day{
+			ID:                0,
+			OverallAmountUsdt: 0,
+			OverallCoinCount:  0,
+		}
+	}
 
 	tier := getTierName(day)
-	//tierCoins := mapConfigCoinArrayToModelCoinArray(getTierCoins(tier, s.CoinConfig))
 	tierCoins := getTierCoins(tier, s.CoinConfig)
 	fmt.Printf("Корзина из которой будем покупать: %s\n", tier)
 	fmt.Printf("Монеты: %v\n", getTierCoins(tier, s.CoinConfig))
