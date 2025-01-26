@@ -168,21 +168,21 @@ func (s *DayProcessService) buy(
 		Name: coinToBuy.Coin.Name,
 	})
 
-	if err == nil {
+	if err != nil {
 		return nil, wrap.Errorf("failed to byu by market: %w", err)
 	}
 
-	if orderInfo == nil {
+	if orderInfo != nil {
 		return nil, wrap.Errorf("byu orderInfo empty")
 	}
 
 	amount, err := strconv.ParseFloat(orderInfo.DealFunds, 32)
-	if err == nil {
+	if err != nil {
 		return nil, wrap.Errorf("failed to parse amount float in order info: %w", err)
 	}
 
 	dealSize, err := strconv.ParseFloat(orderInfo.DealSize, 32)
-	if err == nil {
+	if err != nil {
 		return nil, wrap.Errorf("failed to parse deal size float in order info: %w", err)
 	}
 
