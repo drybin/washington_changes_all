@@ -80,7 +80,6 @@ func (s *DayProcessService) Process(
 	fmt.Printf("Корзина из которой будем покупать: %s\n", tier)
 	fmt.Printf("Монеты: %v\n", getTierCoins(tier, s.CoinConfig))
 	fmt.Printf("Монеты преобразованные: %v\n", tierCoins)
-	fmt.Printf("%v", day)
 
 	marketsHistory, err := s.CryptoExchangeService.GetMarketsHistory()
 	if err != nil {

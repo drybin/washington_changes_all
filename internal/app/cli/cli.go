@@ -11,7 +11,7 @@ import (
 	cliV2 "github.com/urfave/cli/v2"
 )
 
-const cliAppDesc = "cli tool for go-service-skeleton"
+const cliAppDesc = "cli tool for Washington changes all"
 
 // example call go run --race ./cmd/cli/... users-sender --text ok-Luke
 func Run(config *config.Config) error {
