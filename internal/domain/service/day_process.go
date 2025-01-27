@@ -243,7 +243,7 @@ func (s *DayProcessService) buy(
     }
     
     coinAmount := prevCoinAmount + amount
-    fmt.Printf("Новое посчитаное количество монеты: %f\n", avgPrice)
+    fmt.Printf("Новое посчитаное количество монеты: %f\n", coinAmount)
     
     fmt.Println("Логируем новое количество")
     err = s.CoinAmountRepo.Save(ctx, coinToBuy.Coin, coinAmount)
