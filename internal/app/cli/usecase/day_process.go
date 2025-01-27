@@ -45,7 +45,8 @@ func (u *DayProcessUsecase) Process(
 }
 
 func generateReport(day model.DayResult) string {
-    newLine := "<pre>\n</pre>"
+    newLine := "<pre></pre>"
+    newLine = "\n"
     strategyName := "(<i>применена стратегия макс падение от средней цены</i>)" + newLine
     strategyText := fmt.Sprintf(
         "монета упала на <b>%.2f%%</b> (<i>от средней цены %.2f</i>) текущая цена <b>%.2f</b>"+newLine,
@@ -75,7 +76,7 @@ func generateReport(day model.DayResult) string {
         "Купили <b>%.2f</b>"+newLine+
         "Новая средняя цена монеты %.2f (<i>предыдущая %.2f</i>)"+newLine+
         "Новое количество монеты %.2f"+newLine+
-        "На текущий момент куплено %d монет"+newLine,
+        "На текущий момент куплено %.2f монет"+newLine,
         day.DayNumber,
         t.Year(),
         t.Month(),
@@ -88,7 +89,7 @@ func generateReport(day model.DayResult) string {
         day.Amount,
         day.CoinAvgPrice,
         day.PrevCoinAvgPrice,
-        day.CoinAmount,
+        day.Amount,
         day.CoinCount,
     )
 }
