@@ -176,7 +176,7 @@ func (s *DayProcessService) buy(
         return nil, wrap.Errorf("byu orderInfo empty")
     }
     
-    amount, err := strconv.ParseFloat(orderInfo.DealFunds, 32)
+    amount, err := strconv.ParseFloat(orderInfo.DealSize, 32)
     if err != nil {
         return nil, wrap.Errorf("failed to parse amount float in order info: %w", err)
     }
@@ -286,6 +286,10 @@ func calcCoinsCountAndPrevAvgPrice(coins *[]model.CoinPrice, coinToBuy model.Coi
     }
     
     coinCount = coinCount + inc
+    
+    if coinCount == 0 {
+        coinCount = 1
+    }
     
     return coinCount, prevCoinAvgPrice
 }

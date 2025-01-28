@@ -56,7 +56,7 @@ func generateReport(day model.DayResult) string {
     )
     if day.AmountEmptyStrategy {
         strategyName = fmt.Sprintf(
-            "(<i>применена стратегия еще не покупалиs, монет которые еще не покупали в корзине %d</i>)"+newLine,
+            "(<i>применена стратегия еще не покупали, монет которые еще не покупали в корзине %d</i>)"+newLine,
             day.AmountEmptyStrategyCoinCount,
         )
         strategyText = fmt.Sprintf(
@@ -75,8 +75,8 @@ func generateReport(day model.DayResult) string {
         "%s"+
         "Купили <b>%.2f</b>"+newLine+
         "Новая средняя цена монеты %.2f (<i>предыдущая %.2f</i>)"+newLine+
-        "Новое количество монеты %.2f"+newLine+
-        "На текущий момент куплено %.2f монет"+newLine,
+        "Новое количество монеты %.7f"+newLine+
+        "На текущий момент куплено %d монет"+newLine,
         day.DayNumber,
         t.Year(),
         t.Month(),
