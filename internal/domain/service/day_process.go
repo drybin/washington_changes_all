@@ -186,7 +186,7 @@ func (s *DayProcessService) buy(
         return nil, wrap.Errorf("failed to parse deal size float in order info: %w", err)
     }
     
-    dealFunds, err := strconv.ParseFloat(orderInfo.DealSize, 32)
+    dealFunds, err := strconv.ParseFloat(orderInfo.DealFunds, 32)
     if err != nil {
         return nil, wrap.Errorf("failed to parse deal fund float in order info: %w", err)
     }
