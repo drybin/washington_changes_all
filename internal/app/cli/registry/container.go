@@ -26,6 +26,7 @@ type Usecases struct {
 	Users         *usecase.UsersUsecase
 	DayProcess    *usecase.DayProcessUsecase
 	KucoinExplore *usecase.KucoinExploreUsecase
+	GetBalance    *usecase.GetBalanceUsecase
 }
 
 func NewContainer(
@@ -80,6 +81,18 @@ func NewContainer(
 			KucoinExplore: usecase.NewKucoinExploreUsecase(
 				service.NewCryptoExchangeServiceService(
 					//stub.NewKucoinStub(),
+					webapi.NewKucoinWebapi(
+						kucoin.NewApiService(
+							kucoin.ApiKeyOption(config.KucoinConfig.Key),
+							kucoin.ApiSecretOption(config.KucoinConfig.Secret),
+							kucoin.ApiPassPhraseOption(config.KucoinConfig.Passphrase),
+							kucoin.ApiKeyVersionOption(kucoin.ApiKeyVersionV2),
+						),
+					),
+				),
+			),
+			GetBalance: usecase.NewGetBalanceUsecase(
+				service.NewCryptoExchangeServiceService(
 					webapi.NewKucoinWebapi(
 						kucoin.NewApiService(
 							kucoin.ApiKeyOption(config.KucoinConfig.Key),

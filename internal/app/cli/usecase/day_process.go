@@ -45,8 +45,7 @@ func (u *DayProcessUsecase) Process(
 }
 
 func generateReport(day model.DayResult) string {
-    newLine := "<pre></pre>"
-    newLine = "\n"
+    newLine := "\n"
     strategyName := "(<i>применена стратегия макс падение от средней цены</i>)" + newLine
     strategyText := fmt.Sprintf(
         "монета упала на <b>%.2f%%</b> (<i>от средней цены %.2f</i>) текущая цена <b>%.2f</b>"+newLine,
