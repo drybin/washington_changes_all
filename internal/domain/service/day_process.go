@@ -186,7 +186,12 @@ func (s *DayProcessService) buy(
         return nil, wrap.Errorf("failed to parse deal size float in order info: %w", err)
     }
     
-    price := amount / dealSize
+    dealFunds, err := strconv.ParseFloat(orderInfo.DealSize, 32)
+    if err != nil {
+        return nil, wrap.Errorf("failed to parse deal fund float in order info: %w", err)
+    }
+    
+    price := dealFunds / dealSize
     
     fmt.Println("Логируем информацию о дне")
     coinWithAvgPrices, err := s.CoinAvgPricesRepo.GetAll(ctx)
