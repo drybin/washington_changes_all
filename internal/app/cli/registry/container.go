@@ -23,7 +23,7 @@ type Container struct {
 }
 
 type Usecases struct {
-	Users         *usecase.UsersUsecase
+	HelloWorld    *usecase.HelloWorld
 	DayProcess    *usecase.DayProcessUsecase
 	KucoinExplore *usecase.KucoinExploreUsecase
 	GetBalance    *usecase.GetBalanceUsecase
@@ -44,7 +44,7 @@ func NewContainer(
 	container := Container{
 		Logger: log,
 		Usecases: &Usecases{
-			Users: usecase.NewUsersUsecase(),
+			HelloWorld: usecase.NewHelloWorldUsecase(),
 			DayProcess: usecase.NewDayProcessUsecase(
 				service.NewReportSenderService(
 					webapi.NewTelegramWebapi(

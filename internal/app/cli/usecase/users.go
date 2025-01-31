@@ -1,28 +1,23 @@
 package usecase
 
 import (
-	"context"
-	"log"
-
-	"github.com/drybin/washington_changes_all/internal/app/cli/usecase/dto"
+    "context"
+    "log"
 )
 
-type IUserSender interface {
-	Send(ctx context.Context, input dto.SendUsersInput) error
+type IHelloWorld interface {
+    Process(ctx context.Context) error
 }
 
-type UsersUsecase struct {
+type HelloWorld struct {
 }
 
-func NewUsersUsecase() *UsersUsecase {
-	return &UsersUsecase{}
+func NewHelloWorldUsecase() *HelloWorld {
+    return &HelloWorld{}
 }
 
-func (u *UsersUsecase) Send(
-	_ context.Context,
-	input dto.SendUsersInput,
-) error {
-	log.Println(input.Text)
-
-	return nil
+func (u *HelloWorld) Process(_ context.Context) error {
+    log.Println("Hello World!!!")
+    
+    return nil
 }

@@ -30,6 +30,6 @@ func (u *GetBalanceUsecase) Get(_ context.Context) error {
 		return wrap.Errorf("failed to get balance: %w", err)
 	}
 
-	log.Printf("баланс: %2.f", balance)
+	log.Printf("баланс: %.2f$", balance)
 	return nil
 }

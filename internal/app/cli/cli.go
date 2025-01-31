@@ -13,7 +13,7 @@ import (
 
 const cliAppDesc = "cli tool for Washington changes all"
 
-// example call go run --race ./cmd/cli/... users-sender --text ok-Luke
+// example call go run --race ./cmd/cli/... hello-world
 func Run(config *config.Config) error {
     if err := godotenv.Load(); err != nil {
         log.Println(err)
@@ -28,7 +28,7 @@ func Run(config *config.Config) error {
     app.Name = config.ServiceName
     app.Usage = cliAppDesc
     app.Commands = []*cliV2.Command{
-        command.NewUsersSenderCommand(cnt.Usecases.Users),
+        command.NewHelloWorldCommand(cnt.Usecases.HelloWorld),
         command.NewDayProcessCommand(cnt.Usecases.DayProcess),
         command.NewKucoinExploreCommand(cnt.Usecases.KucoinExplore),
         command.NewGetBalanceCommand(cnt.Usecases.GetBalance),
