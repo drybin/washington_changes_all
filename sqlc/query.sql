@@ -116,3 +116,19 @@ VALUES (
         $4
        )
     RETURNING *;
+
+-- name: SaveSellLog :one
+INSERT INTO
+    sell_log (
+    day_id,
+    coin,
+    amount,
+    price
+)
+VALUES (
+           $1,
+           $2,
+           $3,
+           $4
+       )
+    RETURNING *;

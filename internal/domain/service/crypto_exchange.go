@@ -11,7 +11,7 @@ type ICryptoExchangeService interface {
 	GetBalance() (float64, error)
 	GetMarketsHistory() (*[]model.MarketInfo, error)
 	BuyByMarket(coin model.Coin) (*kucoin.OrderModel, error)
-	SellByMarket(coin model.Coin) (*kucoin.OrderModel, error)
+	SellByMarket(coin model.Coin, amount string) (*kucoin.OrderModel, error)
 }
 
 type CryptoExchangeServiceService struct {
@@ -51,8 +51,8 @@ func (s *CryptoExchangeServiceService) BuyByMarket(coin model.Coin) (*kucoin.Ord
 	return res, nil
 }
 
-func (s *CryptoExchangeServiceService) SellByMarket(coin model.Coin) (*kucoin.OrderModel, error) {
-	res, err := s.Repo.SellByMarket(coin)
+func (s *CryptoExchangeServiceService) SellByMarket(coin model.Coin, amount string) (*kucoin.OrderModel, error) {
+	res, err := s.Repo.SellByMarket(coin, amount)
 	if err != nil {
 		return nil, wrap.Errorf("failed to sell by market: %w", err)
 	}

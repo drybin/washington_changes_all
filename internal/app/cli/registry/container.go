@@ -23,10 +23,11 @@ type Container struct {
 }
 
 type Usecases struct {
-	HelloWorld    *usecase.HelloWorld
-	DayProcess    *usecase.DayProcessUsecase
-	KucoinExplore *usecase.KucoinExploreUsecase
-	GetBalance    *usecase.GetBalanceUsecase
+	HelloWorld     *usecase.HelloWorld
+	DayProcess     *usecase.DayProcessUsecase
+	DayProcessSell *usecase.DayProcessSellUsecase
+	KucoinExplore  *usecase.KucoinExploreUsecase
+	GetBalance     *usecase.GetBalanceUsecase
 }
 
 func NewContainer(
@@ -46,6 +47,39 @@ func NewContainer(
 		Usecases: &Usecases{
 			HelloWorld: usecase.NewHelloWorldUsecase(),
 			DayProcess: usecase.NewDayProcessUsecase(
+				service.NewReportSenderService(
+					webapi.NewTelegramWebapi(
+						httpClient,
+						config.TgConfig.BotToken,
+						config.TgConfig.ChatId,
+					),
+				),
+				service.NewDayProcessService(
+					pg.NewDaysRepository(db),
+					pg.NewMarketsHistoryRepository(db),
+					pg.NewCoinAvgPricesRepository(db),
+					pg.NewBuyLogRepository(db),
+					pg.NewCoinAmountRepository(db),
+					webapi.NewKucoinWebapi(
+						kucoin.NewApiService(
+							kucoin.ApiKeyOption(config.KucoinConfig.Key),
+							kucoin.ApiSecretOption(config.KucoinConfig.Secret),
+							kucoin.ApiPassPhraseOption(config.KucoinConfig.Passphrase),
+							kucoin.ApiKeyVersionOption(kucoin.ApiKeyVersionV2),
+						),
+					),
+					buy_strategy.NewAmountEmptyStrategy(
+						pg.NewCoinAvgPricesRepository(db),
+						config.CoinConfig,
+					),
+					buy_strategy.NewMaxPriceDownStrategy(
+						pg.NewCoinAvgPricesRepository(db),
+						config.CoinConfig,
+					),
+					config.CoinConfig,
+				),
+			),
+			DayProcessSell: usecase.NewDayProcessSellUsecase(
 				service.NewReportSenderService(
 					webapi.NewTelegramWebapi(
 						httpClient,

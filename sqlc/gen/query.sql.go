@@ -346,3 +346,45 @@ func (q *Queries) SaveMarketInfo(ctx context.Context, arg SaveMarketInfoParams) 
 	)
 	return err
 }
+
+const saveSellLog = `-- name: SaveSellLog :one
+INSERT INTO
+    sell_log (
+    day_id,
+    coin,
+    amount,
+    price
+)
+VALUES (
+           $1,
+           $2,
+           $3,
+           $4
+       )
+    RETURNING id, day_id, coin, amount, price
+`
+
+type SaveSellLogParams struct {
+	DayID  int
+	Coin   string
+	Amount float64
+	Price  float64
+}
+
+func (q *Queries) SaveSellLog(ctx context.Context, arg SaveSellLogParams) (SellLog, error) {
+	row := q.db.QueryRow(ctx, saveSellLog,
+		arg.DayID,
+		arg.Coin,
+		arg.Amount,
+		arg.Price,
+	)
+	var i SellLog
+	err := row.Scan(
+		&i.ID,
+		&i.DayID,
+		&i.Coin,
+		&i.Amount,
+		&i.Price,
+	)
+	return i, err
+}
