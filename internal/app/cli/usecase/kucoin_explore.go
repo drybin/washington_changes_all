@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/drybin/washington_changes_all/internal/domain/model"
 	"github.com/drybin/washington_changes_all/internal/domain/service"
-	"github.com/drybin/washington_changes_all/internal/domain/types/coin_name"
 	"github.com/drybin/washington_changes_all/pkg/wrap"
 )
 
@@ -41,12 +39,12 @@ func (u *KucoinExploreUsecase) Process(
 	//fmt.Printf("%v", tickers)
 
 	fmt.Println("=====================")
-	res, err := u.service.SellByMarket(model.Coin{Name: coin_name.BTC})
-	if err != nil {
-		return wrap.Errorf("failed to buy by market: %w", err)
-	}
+	//res, err := u.service.SellByMarket(model.Coin{Name: coin_name.BTC})
+	//if err != nil {
+	//	return wrap.Errorf("failed to buy by market: %w", err)
+	//}
 
-	fmt.Printf("%v", res)
+	//fmt.Printf("%v", res)
 	fmt.Println("TEST ended")
 	return nil
 }

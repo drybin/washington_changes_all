@@ -29,12 +29,12 @@ func NewDayProcessSellUsecase(
 func (u *DayProcessSellUsecase) Process(
 	ctx context.Context,
 ) error {
-	dayResult, err := u.service.Process(ctx)
+	daySellResult, err := u.service.Process(ctx)
 	if err != nil {
 		return wrap.Errorf("failed to process day: %w", err)
 	}
 
-	msg := generateReport(*dayResult)
+	msg := generateReportSell(*daySellResult)
 	err = u.reportSenderService.Send(msg)
 	if err != nil {
 		return wrap.Errorf("failed to process: %w", err)
@@ -44,51 +44,34 @@ func (u *DayProcessSellUsecase) Process(
 	return nil
 }
 
-func generateReportSell(day model.DayResult) string {
+func generateReportSell(day model.DaySellResult) string {
 	newLine := "\n"
-	strategyName := "(<i>применена стратегия макс падение от средней цены</i>)" + newLine
-	strategyText := fmt.Sprintf(
-		"монета упала на <b>%.2f%%</b> (<i>от средней цены %.2f</i>) текущая цена <b>%.2f</b>"+newLine,
-		day.CoinPriceChange,
-		day.PrevCoinAvgPrice,
-		day.Price,
-	)
-	if day.AmountEmptyStrategy {
-		strategyName = fmt.Sprintf(
-			"(<i>применена стратегия еще не покупали, монет которые еще не покупали в корзине %d</i>)"+newLine,
-			day.AmountEmptyStrategyCoinCount,
-		)
-		strategyText = fmt.Sprintf(
-			"монета упала на <b>%.2f%%</b> (<i>от ath %.2f</i>) текущая цена <b>%.2f</b>"+newLine,
-			day.CoinPriceChange,
-			day.CoinAth,
-			day.Price,
+	sellReport := "<b>Продали монеты:<b>" + newLine
+
+	for _, coinInfo := range day.Coins {
+		sellReport += fmt.Sprintf(
+			"монета: %s"+newLine+
+				"количество %.2f(<i>предыдущее %.2f</i>)"+newLine+
+				"текущая цена %.2f(<i>средняя %.2f</i>)"+newLine+
+				"продали на %.2f",
+			coinInfo.CoinName,
+			coinInfo.CoinNewAmount,
+			coinInfo.CoinPrevAmount,
+			coinInfo.CoinCurrentPrice,
+			coinInfo.CoinAvgPrice,
+			coinInfo.SellUsdtAmount,
 		)
 	}
 
 	t := time.Now()
 	return fmt.Sprintf("Сегодня <b>%d</b> день (<i>дата %d-%02d-%02d</i>)"+newLine+
 		"(<i>баланс %.2f</i>)"+newLine+
-		"Покупаем монету <b>%s</b> из корзины <b>%s</b>"+newLine+
-		"%s"+
-		"%s"+
-		"Купили <b>%.2f</b>"+newLine+
-		"Новая средняя цена монеты %.2f (<i>предыдущая %.2f</i>)"+newLine+
-		"Новое количество монеты %.7f"+newLine+
-		"На текущий момент куплено %d монет"+newLine,
-		day.DayNumber,
+		"%s",
+		day.DayInfo.ID,
 		t.Year(),
 		t.Month(),
 		t.Day(),
 		day.Balance,
-		day.CoinName.String(),
-		day.Tier.String(),
-		strategyName,
-		strategyText,
-		day.Amount,
-		day.CoinAvgPrice,
-		day.PrevCoinAvgPrice,
-		day.Amount,
-		day.CoinCount,
+		sellReport,
 	)
 }

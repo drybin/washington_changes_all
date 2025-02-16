@@ -30,6 +30,7 @@ func Run(config *config.Config) error {
 	app.Commands = []*cliV2.Command{
 		command.NewHelloWorldCommand(cnt.Usecases.HelloWorld),
 		command.NewDayProcessCommand(cnt.Usecases.DayProcess),
+		command.NewDayProcessSellCommand(cnt.Usecases.DayProcessSell),
 		command.NewKucoinExploreCommand(cnt.Usecases.KucoinExplore),
 		command.NewGetBalanceCommand(cnt.Usecases.GetBalance),
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func NewDayProcessSellCommand(uc usecase.IDayProcess) *cli.Command {
+func NewDayProcessSellCommand(uc usecase.IDayProcessSell) *cli.Command {
 	return &cli.Command{
 		Name:  "day-process-sell",
 		Usage: "day-process-sell command",
