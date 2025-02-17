@@ -44,6 +44,8 @@ VALUES (
            $1,
            $2
        )
+    ON CONFLICT(coin) DO UPDATE
+    SET amount = $2
     RETURNING *;
 
 -- name: GetCoinAvgPrices :many
