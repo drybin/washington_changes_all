@@ -54,7 +54,11 @@ WHERE coin = ANY($1::TEXT[]);
 SELECT * FROM coin_avg_prices;
 
 -- name: SaveCoinAvgPricesAll :one
-INSERT INTO coin_avg_prices (coin, price) VALUES ($1, $2)  RETURNING *;
+INSERT INTO coin_avg_prices (coin, price)
+    VALUES ($1, $2)
+ON CONFLICT(coin) DO UPDATE
+    SET price = $2
+    RETURNING *;
 
 
 -- name: SaveMarketInfo :exec

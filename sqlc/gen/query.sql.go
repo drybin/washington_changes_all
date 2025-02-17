@@ -191,7 +191,11 @@ func (q *Queries) SaveCoinAmount(ctx context.Context, arg SaveCoinAmountParams) 
 }
 
 const saveCoinAvgPricesAll = `-- name: SaveCoinAvgPricesAll :one
-INSERT INTO coin_avg_prices (coin, price) VALUES ($1, $2)  RETURNING coin, price
+INSERT INTO coin_avg_prices (coin, price)
+    VALUES ($1, $2)
+ON CONFLICT(coin) DO UPDATE
+    SET price = $2
+    RETURNING coin, price
 `
 
 type SaveCoinAvgPricesAllParams struct {
