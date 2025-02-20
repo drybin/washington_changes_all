@@ -93,6 +93,17 @@ func (s *DayProcessSellService) Process(
 
 					fmt.Printf("текущее количество монеты %f, будем продавать %f\n", amountFromRepo, amountToSell)
 
+					pairInfo, err := s.CryptoExchangeService.GetPairInfo(
+						model.CoinsPair{
+							CoinFirst:  model.Coin{Name: coinAvgPrice.Coin.Name},
+							CoinSecond: model.Coin{Name: coin_name.USDT},
+						},
+					)
+					if err != nil {
+						return nil, wrap.Errorf("failed to get pair info: %w", err)
+					}
+					fmt.Printf("%v", pairInfo)
+
 					orderInfo, err := s.sell(ctx, coinAvgPrice.Coin.Name, amountToSellString)
 					if err != nil {
 						return nil, wrap.Errorf("failed to sell by market: %w", err)

@@ -97,6 +97,27 @@ func (c *KucoinWebapi) GetBalances() ([]*model.Balance, error) {
 	return result, nil
 }
 
+func (c *KucoinWebapi) GetPairInfo(pair model.CoinsPair) (*model.PairInfo, error) {
+	symbol := fmt.Sprintf("%s-%s", pair.CoinFirst.Name, pair.CoinSecond.Name)
+	resp, err := c.client.SymbolsV2(symbol)
+	if err != nil {
+		return nil, wrap.Errorf("failed to symbol info: %w", err)
+	}
+
+	symbolInfo := kucoin.SymbolModelV2{}
+	err = json.Unmarshal(resp.RawData, &symbolInfo)
+	if err != nil {
+		return nil, wrap.Errorf("failed to unmarshal symbolV2 model: %w", err)
+	}
+
+	result, err := mapSymbolV2ResponseToDomainModel(symbolInfo, pair)
+	if err != nil {
+		return nil, wrap.Errorf("failed to map symbolV2 to model: %w", err)
+	}
+
+	return result, nil
+}
+
 func (c *KucoinWebapi) BuyByMarket(coin model.Coin) (*kucoin.OrderModel, error) {
 
 	resp, err := c.client.CreateOrder(
@@ -207,6 +228,84 @@ func mapTickersResponseToDomainModel(m *kucoin.TickerModel) model.MarketInfo {
 		TakerCoefficient: takerCoefficient,
 		MakerCoefficient: makerCoefficient,
 	}
+}
+
+func mapSymbolV2ResponseToDomainModel(symbolInfo kucoin.SymbolModelV2, pair model.CoinsPair) (*model.PairInfo, error) {
+
+	QuoteMinSize, err := strconv.ParseFloat(symbolInfo.QuoteMinSize, 64)
+	if err != nil {
+		fmt.Println("Error parse QuoteMinSize:", err)
+		return nil, err
+	}
+
+	BaseMinSize, err := strconv.ParseFloat(symbolInfo.BaseMinSize, 64)
+	if err != nil {
+		fmt.Println("Error parse BaseMinSize:", err)
+		return nil, err
+	}
+
+	BaseMaxSize, err := strconv.ParseFloat(symbolInfo.BaseMaxSize, 64)
+	if err != nil {
+		fmt.Println("Error parse BaseMaxSize:", err)
+		return nil, err
+	}
+
+	BaseIncrement, err := strconv.ParseFloat(symbolInfo.BaseIncrement, 64)
+	if err != nil {
+		fmt.Println("Error parse BaseIncrement:", err)
+		return nil, err
+	}
+
+	QuoteIncrement, err := strconv.ParseFloat(symbolInfo.QuoteIncrement, 64)
+	if err != nil {
+		fmt.Println("Error parse QuoteIncrement:", err)
+		return nil, err
+	}
+
+	QuoteMaxSize, err := strconv.ParseFloat(symbolInfo.QuoteMaxSize, 64)
+	if err != nil {
+		fmt.Println("Error parse QuoteMaxSize:", err)
+		return nil, err
+	}
+
+	PriceIncrement, err := strconv.ParseFloat(symbolInfo.PriceIncrement, 64)
+	if err != nil {
+		fmt.Println("Error parse PriceIncrement:", err)
+		return nil, err
+	}
+
+	MinFunds, err := strconv.ParseFloat(symbolInfo.MinFunds, 64)
+	if err != nil {
+		fmt.Println("Error parse MinFunds:", err)
+		return nil, err
+	}
+
+	PriceLimitRate, err := strconv.ParseFloat(symbolInfo.PriceLimitRate, 64)
+	if err != nil {
+		fmt.Println("Error parse PriceLimitRate:", err)
+		return nil, err
+	}
+
+	return &model.PairInfo{
+		Pair:            pair,
+		Symbol:          symbolInfo.Symbol,
+		Name:            symbolInfo.Name,
+		BaseCurrency:    symbolInfo.BaseCurrency,
+		QuoteCurrency:   symbolInfo.QuoteCurrency,
+		Market:          symbolInfo.Market,
+		BaseMinSize:     BaseMinSize,
+		QuoteMinSize:    QuoteMinSize,
+		BaseMaxSize:     BaseMaxSize,
+		QuoteMaxSize:    QuoteMaxSize,
+		BaseIncrement:   BaseIncrement,
+		QuoteIncrement:  QuoteIncrement,
+		PriceIncrement:  PriceIncrement,
+		FeeCurrency:     symbolInfo.FeeCurrency,
+		EnableTrading:   symbolInfo.EnableTrading,
+		IsMarginEnabled: symbolInfo.IsMarginEnabled,
+		PriceLimitRate:  PriceLimitRate,
+		MinFunds:        MinFunds,
+	}, nil
 }
 
 func getCoinNameFirst(s string) string {

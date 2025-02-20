@@ -12,6 +12,7 @@ type ICryptoExchangeService interface {
 	GetMarketsHistory() (*[]model.MarketInfo, error)
 	BuyByMarket(coin model.Coin) (*kucoin.OrderModel, error)
 	SellByMarket(coin model.Coin, amount string) (*kucoin.OrderModel, error)
+	GetPairInfo(pair model.CoinsPair) (*model.PairInfo, error)
 }
 
 type CryptoExchangeServiceService struct {
@@ -55,6 +56,15 @@ func (s *CryptoExchangeServiceService) SellByMarket(coin model.Coin, amount stri
 	res, err := s.Repo.SellByMarket(coin, amount)
 	if err != nil {
 		return nil, wrap.Errorf("failed to sell by market: %w", err)
+	}
+
+	return res, nil
+}
+
+func (s *CryptoExchangeServiceService) GetPairInfo(pair model.CoinsPair) (*model.PairInfo, error) {
+	res, err := s.Repo.GetPairInfo(pair)
+	if err != nil {
+		return nil, wrap.Errorf("failed to get pair info: %w", err)
 	}
 
 	return res, nil
