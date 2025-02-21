@@ -3,7 +3,9 @@ package service
 import (
     "context"
     "fmt"
+    "math"
     "strconv"
+    "strings"
     
     "github.com/Kucoin/kucoin-go-sdk"
     "github.com/drybin/washington_changes_all/internal/app/cli/config"
@@ -89,7 +91,6 @@ func (s *DayProcessSellService) Process(
                     }
                     
                     amountToSell := amountFromRepo / 2.0
-                    amountToSellString := fmt.Sprintf("%f", amountToSell)
                     
                     fmt.Printf("текущее количество монеты %f, будем продавать %f\n", amountFromRepo, amountToSell)
                     
@@ -103,7 +104,10 @@ func (s *DayProcessSellService) Process(
                     if err != nil {
                         return nil, wrap.Errorf("failed to get pair info: %w", err)
                     }
-                    fmt.Printf("%v", pairInfo)
+                    
+                    decimalPlaces := getDecimalPlaces(pairInfo.QuoteIncrement)
+                    roundedNumber := roundToDecimals(amountToSell, decimalPlaces)
+                    amountToSellString := fmt.Sprintf("%f", roundedNumber)
                     
                     orderInfo, err := s.sell(ctx, coinAvgPrice.Coin.Name, amountToSellString)
                     if err != nil {
@@ -207,4 +211,20 @@ func getAllTierCoins(cfg config.CoinConfig) []config.Coin {
     res = append(res, cfg.TierThree...)
     
     return res
+}
+
+// getDecimalPlaces возвращает количество знаков после запятой у числа
+func getDecimalPlaces(num float64) int {
+    str := strconv.FormatFloat(num, 'f', -1, 64) // Преобразуем в строку без лишних нулей
+    parts := strings.Split(str, ".")             // Разделяем на целую и дробную части
+    if len(parts) < 2 {
+        return 0 // Нет дробной части
+    }
+    return len(parts[1]) // Длина дробной части
+}
+
+// roundToDecimals округляет число до нужного количества знаков после запятой
+func roundToDecimals(num float64, decimalPlaces int) float64 {
+    multiplier := math.Pow(10, float64(decimalPlaces)) // 10^decimalPlaces
+    return math.Round(num*multiplier) / multiplier
 }
