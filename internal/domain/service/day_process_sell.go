@@ -162,7 +162,7 @@ func (s *DayProcessSellService) Process(
                             CoinAvgPrice:     coinAvgPrice.Price,
                             CoinPrevAmount:   amountFromRepo,
                             CoinNewAmount:    amountToSell,
-                            SellUsdtAmount:   dealSize,
+                            SellUsdtAmount:   dealFunds,
                         },
                     )
                 }
