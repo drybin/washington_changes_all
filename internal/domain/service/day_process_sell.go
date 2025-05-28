@@ -107,14 +107,10 @@ func (s *DayProcessSellService) Process(
                     
                     fmt.Printf("pairInfo: %+v\n", pairInfo)
                     
-                    decimalPlaces := getDecimalPlaces(pairInfo.QuoteIncrement)
+                    //decimalPlaces := getDecimalPlaces(pairInfo.QuoteIncrement)
+                    decimalPlaces := getDecimalPlaces(pairInfo.BaseIncrement)
                     roundedNumber := roundToDecimals(amountToSell, decimalPlaces)
                     amountToSellString := fmt.Sprintf("%g", roundedNumber)
-                    
-                    fmt.Printf("pairInfo.QuoteIncrement: %+v\n", pairInfo.QuoteIncrement)
-                    fmt.Printf("decimalPlaces: %+v\n", decimalPlaces)
-                    fmt.Printf("roundedNumber: %+v\n", roundedNumber)
-                    fmt.Printf("amountToSellString: %+v\n", amountToSellString)
                     
                     orderInfo, err := s.sell(ctx, coinAvgPrice.Coin.Name, amountToSellString)
                     if err != nil {

@@ -4,7 +4,6 @@ import (
     "context"
     "encoding/json"
     "fmt"
-    "os"
     "strconv"
     "strings"
     "time"
@@ -169,10 +168,6 @@ func (c *KucoinWebapi) SellByMarket(ctx context.Context, coin model.Coin, amount
     }
     
     orderInfo := kucoin.CreateOrderResultModel{}
-    fmt.Printf("amount %+v\n", amount)
-    fmt.Printf("%+v\n", resp)
-    fmt.Printf("%+v\n", orderInfo)
-    os.Exit(1)
     err = json.Unmarshal(resp.RawData, &orderInfo)
     if err != nil {
         return nil, wrap.Errorf("failed to unmarshal create order result model: %w %s", err, string(resp.RawData))
