@@ -48,7 +48,7 @@ func generateReport(day model.DayResult) string {
     newLine := "\n"
     strategyName := "(<i>применена стратегия макс падение от средней цены</i>)" + newLine
     strategyText := fmt.Sprintf(
-        "монета упала на <b>%.2f%%</b> (<i>от средней цены %.2f</i>) текущая цена <b>%.2f</b>"+newLine,
+        "монета упала на <b>%.2f%%</b> (<i>от средней цены %.4f</i>) текущая цена <b>%.4f</b>"+newLine,
         day.CoinPriceChange,
         day.PrevCoinAvgPrice,
         day.Price,
@@ -59,7 +59,7 @@ func generateReport(day model.DayResult) string {
             day.AmountEmptyStrategyCoinCount,
         )
         strategyText = fmt.Sprintf(
-            "монета упала на <b>%.2f%%</b> (<i>от ath %.2f</i>) текущая цена <b>%.2f</b>"+newLine,
+            "монета упала на <b>%.2f%%</b> (<i>от ath %.4f</i>) текущая цена <b>%.4f</b>"+newLine,
             day.CoinPriceChange,
             day.CoinAth,
             day.Price,
@@ -72,8 +72,8 @@ func generateReport(day model.DayResult) string {
         "Покупаем монету <b>%s</b> из корзины <b>%s</b>"+newLine+
         "%s"+
         "%s"+
-        "Купили <b>%.2f</b>"+newLine+
-        "Новая средняя цена монеты %.2f (<i>предыдущая %.2f</i>)"+newLine+
+        "Купили <b>%.4f</b>"+newLine+
+        "Новая средняя цена монеты %.4f (<i>предыдущая %.4f</i>)"+newLine+
         "Новое количество монеты %.7f"+newLine+
         "На текущий момент куплено %d монет"+newLine,
         day.DayNumber,
