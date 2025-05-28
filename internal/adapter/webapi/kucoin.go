@@ -169,6 +169,7 @@ func (c *KucoinWebapi) SellByMarket(ctx context.Context, coin model.Coin, amount
     }
     
     orderInfo := kucoin.CreateOrderResultModel{}
+    fmt.Printf("amount %+v\n", amount)
     fmt.Printf("%+v\n", resp)
     fmt.Printf("%+v\n", orderInfo)
     os.Exit(1)
