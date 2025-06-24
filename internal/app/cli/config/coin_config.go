@@ -225,10 +225,6 @@ func InitCoinConfig() CoinConfig {
                 ATH:  2.04,
             },
             {
-                Name: coin_name.FTM,
-                ATH:  3.48,
-            },
-            {
                 Name: coin_name.MNT,
                 ATH:  1.51,
             },
