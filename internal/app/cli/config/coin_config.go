@@ -165,10 +165,6 @@ func InitCoinConfig() CoinConfig {
                 ATH:  5.9,
             },
             {
-                Name: coin_name.EOS,
-                ATH:  22.89,
-            },
-            {
                 Name: coin_name.NEO,
                 ATH:  196.8,
             },
