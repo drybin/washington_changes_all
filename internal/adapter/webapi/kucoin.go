@@ -170,6 +170,7 @@ func (c *KucoinWebapi) SellByMarket(ctx context.Context, coin model.Coin, amount
     orderInfo := kucoin.CreateOrderResultModel{}
     err = json.Unmarshal(resp.RawData, &orderInfo)
     if err != nil {
+        fmt.Printf("RawData %v\n", resp.RawData)
         return nil, wrap.Errorf("failed to unmarshal create order result model: %w %s", err, string(resp.RawData))
     }
     
