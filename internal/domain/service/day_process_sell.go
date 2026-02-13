@@ -83,6 +83,9 @@ func (s *DayProcessSellService) Process(
                     )
                     
                     //  sell
+                    if coinAvgPrice.Coin.Name == "DASH" {
+                        continue
+                    }
                     amountFromRepo, err := s.CoinAmountRepo.Get(ctx, model.Coin{
                         Name: coinAvgPrice.Coin.Name,
                     })
