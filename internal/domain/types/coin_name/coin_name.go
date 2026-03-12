@@ -102,7 +102,13 @@ const (
 	HFT   CoinName = "HFT"
 	TFUEL CoinName = "TFUEL"
 	VELO  CoinName = "VELO"
-	ENA   CoinName = "ENA"
+	ENA     CoinName = "ENA"
+	HYPE    CoinName = "HYPE"
+	PENDLE  CoinName = "PENDLE"
+	JTO     CoinName = "JTO"
+	VIRTUAL CoinName = "VIRTUAL"
+	IO      CoinName = "IO"
+	AKT     CoinName = "AKT"
 	//Meme
 	SHIB     CoinName = "SHIB"
 	WIF      CoinName = "WIF"
@@ -318,6 +324,18 @@ func FromString(s string) CoinName {
 		return VELO
 	case ENA.String():
 		return ENA
+	case HYPE.String():
+		return HYPE
+	case PENDLE.String():
+		return PENDLE
+	case JTO.String():
+		return JTO
+	case VIRTUAL.String():
+		return VIRTUAL
+	case IO.String():
+		return IO
+	case AKT.String():
+		return AKT
 	case SHIB.String():
 		return SHIB
 	case WIF.String():
