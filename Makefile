@@ -45,3 +45,14 @@ build:
 	docker run --init -it --rm --env-file .env -v ${PWD}:/app -w /app  golang:1.22 go build -o wca /app/cmd/cli/main.go
 
 ################################################################################################################
+.PHONY: build-with-cache
+build-with-cache:
+	$(call _info,"Build with docker (go mod + build cache)...")
+	@mkdir -p ${PWD}/.cache/go-mod ${PWD}/.cache/go-build
+	docker run --init -it --rm --env-file .env \
+		-v ${PWD}:/app -w /app \
+		-v ${PWD}/.cache/go-mod:/go/pkg/mod \
+		-v ${PWD}/.cache/go-build:/root/.cache/go-build \
+		golang:1.22 go build -o wca /app/cmd/cli/main.go
+
+################################################################################################################
