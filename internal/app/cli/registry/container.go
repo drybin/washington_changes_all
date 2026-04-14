@@ -12,7 +12,6 @@ import (
     "github.com/drybin/washington_changes_all/internal/domain/service/buy_strategy"
     "github.com/drybin/washington_changes_all/pkg/logger"
     "github.com/drybin/washington_changes_all/pkg/wrap"
-    "github.com/go-resty/resty/v2"
     "github.com/jackc/pgx/v5"
 )
 
@@ -35,7 +34,10 @@ func NewContainer(
 ) (*Container, error) {
     log := logger.NewLogger()
     
-    httpClient := resty.New()
+    httpClient, err := newTelegramRestyClient(config.TgConfig)
+    if err != nil {
+        return nil, err
+    }
     
     db, err := newDbConn(config)
     if err != nil {

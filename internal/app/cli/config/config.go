@@ -18,9 +18,10 @@ type Config struct {
 }
 
 type TgConfig struct {
-	BotToken string
-	ChatId   string
-	Timeout  time.Duration
+	BotToken    string
+	ChatId      string
+	Timeout     time.Duration
+	Socks5Proxy string
 }
 
 type KucoinConfig struct {
@@ -72,9 +73,10 @@ func (c Config) Validate() error {
 
 func initTgConfig() *TgConfig {
 	return &TgConfig{
-		BotToken: env.GetString("TG_BOT_TOKEN", ""),
-		ChatId:   env.GetString("TG_CHAT_ID", ""),
-		Timeout:  10 * time.Second,
+		BotToken:    env.GetString("TG_BOT_TOKEN", ""),
+		ChatId:      env.GetString("TG_CHAT_ID", ""),
+		Timeout:     10 * time.Second,
+		Socks5Proxy: env.GetString("TG_SOCKS5_PROXY", ""),
 	}
 }
 
