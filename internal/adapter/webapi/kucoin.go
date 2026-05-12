@@ -143,7 +143,7 @@ func (c *KucoinWebapi) BuyByMarket(ctx context.Context, coin model.Coin) (*kucoi
     orderInfo := kucoin.CreateOrderResultModel{}
     err = json.Unmarshal(resp.RawData, &orderInfo)
     if err != nil {
-        return nil, wrap.Errorf("failed to unmarshal create order result model: %w", err)
+        return nil, wrap.Errorf("failed to unmarshal create order result model: %w raw=%q", err, string(resp.RawData))
     }
     
     return c.GetOrderInfo(ctx, orderInfo.OrderId)
