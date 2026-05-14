@@ -119,18 +119,40 @@ func (c *KucoinWebapi) GetPairInfo(ctx context.Context, pair model.CoinsPair) (*
     return result, nil
 }
 
+// readCreateOrderResult parses the KuCoin "data" field via the SDK (HTTP status, api code, empty data).
+func readCreateOrderResult(resp *kucoin.ApiResponse, order *kucoin.CreateOrderModel) (kucoin.CreateOrderResultModel, error) {
+    var orderInfo kucoin.CreateOrderResultModel
+    if resp == nil {
+        return orderInfo, wrap.Errorf("create order: nil response [symbol=%s side=%s]", order.Symbol, order.Side)
+    }
+    if err := resp.ReadData(&orderInfo); err != nil {
+        return orderInfo, wrap.Errorf(
+            "create order: read response data [symbol=%s side=%s type=%s funds=%q size=%q apiCode=%s apiMsg=%q httpOK=%v apiOK=%v rawLen=%d]: %w",
+            order.Symbol,
+            order.Side,
+            order.Type,
+            order.Funds,
+            order.Size,
+            resp.Code,
+            resp.Message,
+            resp.HttpSuccessful(),
+            resp.ApiSuccessful(),
+            len(resp.RawData),
+            err,
+        )
+    }
+    return orderInfo, nil
+}
+
 func (c *KucoinWebapi) BuyByMarket(ctx context.Context, coin model.Coin) (*kucoin.OrderModel, error) {
-    
-    resp, err := c.client.CreateOrder(
-        ctx,
-        &kucoin.CreateOrderModel{
-            ClientOid: kucoin.IntToString(time.Now().UnixNano()),
-            Side:      "buy",
-            Symbol:    fmt.Sprintf("%s-USDT", coin.Name),
-            Type:      "market",
-            Funds:     "1",
-        },
-    )
+    orderReq := &kucoin.CreateOrderModel{
+        ClientOid: kucoin.IntToString(time.Now().UnixNano()),
+        Side:      "buy",
+        Symbol:    fmt.Sprintf("%s-USDT", coin.Name),
+        Type:      "market",
+        Funds:     "1",
+    }
+    resp, err := c.client.CreateOrder(ctx, orderReq)
     
     if err != nil {
         respAsString := "response is empty"
@@ -140,38 +162,36 @@ func (c *KucoinWebapi) BuyByMarket(ctx context.Context, coin model.Coin) (*kucoi
         return nil, wrap.Errorf("failed to place market order to buy: %w %s", err, respAsString)
     }
     
-    orderInfo := kucoin.CreateOrderResultModel{}
-    err = json.Unmarshal(resp.RawData, &orderInfo)
+    orderInfo, err := readCreateOrderResult(resp, orderReq)
     if err != nil {
-        return nil, wrap.Errorf("failed to unmarshal create order result model: %w raw=%q", err, string(resp.RawData))
+        return nil, wrap.Errorf("failed to buy by market: %w", err)
     }
     
     return c.GetOrderInfo(ctx, orderInfo.OrderId)
 }
 
 func (c *KucoinWebapi) SellByMarket(ctx context.Context, coin model.Coin, amount string) (*kucoin.OrderModel, error) {
-    
-    resp, err := c.client.CreateOrder(
-        ctx,
-        &kucoin.CreateOrderModel{
-            ClientOid: kucoin.IntToString(time.Now().UnixNano()),
-            Side:      "sell",
-            Symbol:    fmt.Sprintf("%s-USDT", coin.Name),
-            Type:      "market",
-            //Funds:     "0.0000154",
-            Size: amount,
-        },
-    )
+    orderReq := &kucoin.CreateOrderModel{
+        ClientOid: kucoin.IntToString(time.Now().UnixNano()),
+        Side:      "sell",
+        Symbol:    fmt.Sprintf("%s-USDT", coin.Name),
+        Type:      "market",
+        //Funds:     "0.0000154",
+        Size: amount,
+    }
+    resp, err := c.client.CreateOrder(ctx, orderReq)
     
     if err != nil {
-        return nil, wrap.Errorf("failed to place market order to sell: %w", err)
+        respAsString := "response is empty"
+        if resp != nil && resp.RawData != nil {
+            respAsString = string(resp.RawData)
+        }
+        return nil, wrap.Errorf("failed to place market order to sell: %w %s", err, respAsString)
     }
     
-    orderInfo := kucoin.CreateOrderResultModel{}
-    err = json.Unmarshal(resp.RawData, &orderInfo)
+    orderInfo, err := readCreateOrderResult(resp, orderReq)
     if err != nil {
-        fmt.Printf("RawData %v\n", resp.RawData)
-        return nil, wrap.Errorf("failed to unmarshal create order result model: %w %s", err, string(resp.RawData))
+        return nil, wrap.Errorf("failed to sell by market: %w", err)
     }
     
     return c.GetOrderInfo(ctx, orderInfo.OrderId)

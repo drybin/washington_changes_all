@@ -171,7 +171,7 @@ func (s *DayProcessService) buy(
         })
     
     if err != nil {
-        return nil, wrap.Errorf("failed to byu by market: %w", err)
+        return nil, wrap.Errorf("failed to buy by market: %w", err)
     }
     
     if orderInfo == nil {
